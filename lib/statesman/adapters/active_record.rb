@@ -9,7 +9,7 @@ module Statesman
       def initialize(transition_class, parent_model, observer)
         serialized = serialized?(transition_class)
         column_type = transition_class.columns_hash['metadata'].sql_type
-        if !serialized && column_type != 'json'
+        if !serialized && !['json', 'jsonb'].include?(column_type)
           raise UnserializedMetadataError,
                 "#{transition_class.name}#metadata is not serialized"
         elsif serialized && column_type == 'json'
