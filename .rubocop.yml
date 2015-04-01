@@ -4,9 +4,11 @@ AllCops:
   Include:
     - Rakefile
     - statesman.gemfile
+    - lib/tasks/*.rake
   Exclude:
-    - vendor/**
+    - vendor/**/*
     - .*/**
+    - spec/fixtures/**/*
 
 StringLiterals:
   Enabled: false
@@ -37,3 +39,6 @@ GuardClause:
 
 SingleSpaceBeforeFirstArg:
   Enabled: false
+
+Style/DotPosition:
+  EnforcedStyle: 'trailing'

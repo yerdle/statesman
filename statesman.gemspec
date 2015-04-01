@@ -23,10 +23,12 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec",         "~> 3.1"
   spec.add_development_dependency "rspec-its",     "~> 1.1"
   spec.add_development_dependency "guard-rspec",   "~> 4.3"
-  spec.add_development_dependency "rubocop",       "~> 0.27"
+  spec.add_development_dependency "rubocop",       "~> 0.29.1"
   spec.add_development_dependency "guard-rubocop", "~> 1.2"
   spec.add_development_dependency "sqlite3",       "~> 1.3"
   spec.add_development_dependency "mongoid",       ">= 3.1"
   spec.add_development_dependency "activerecord",  ">= 3.2"
+  spec.add_development_dependency "pg",            "~> 0.18"
+  spec.add_development_dependency "mysql2",        "~> 0.3"
   spec.add_development_dependency "ammeter",       "~> 1.1"
 end

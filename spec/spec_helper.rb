@@ -26,12 +26,26 @@ RSpec.configure do |config|
     raise(error)
   end
 
-  config.before(:each) do
-    # Connect to & cleanup test database
-    ActiveRecord::Base.establish_connection(adapter: "sqlite3",
-                                            database: DB.to_s)
+  if config.exclusion_filter[:active_record]
+    puts "Skipping ActiveRecord tests"
+  else
+    # Connect to the database for activerecord tests
+    db_conn_spec = ENV["DATABASE_URL"]
+    db_conn_spec ||=  { adapter: "sqlite3", database: ":memory:" }
+    ActiveRecord::Base.establish_connection(db_conn_spec)
 
-    %w(my_models my_model_transitions).each do |table_name|
+    db_adapter = ActiveRecord::Base.connection.adapter_name
+    puts "Running with database adapter '#{db_adapter}'"
+  end
+
+  config.before(:each, active_record: true) do
+    tables = %w(
+      my_active_record_models
+      my_active_record_model_transitions
+      my_namespace_my_active_record_models
+      my_namespace_my_active_record_model_transitions
+    )
+    tables.each do |table_name|
       sql = "DROP TABLE IF EXISTS #{table_name};"
       ActiveRecord::Base.connection.execute(sql)
     end
@@ -45,9 +59,15 @@ RSpec.configure do |config|
     def prepare_transitions_table
       silence_stream(STDOUT) do
         CreateMyActiveRecordModelTransitionMigration.migrate(:up)
+        MyActiveRecordModelTransition.reset_column_information
+      end
+    end
+
+    def drop_most_recent_column
+      silence_stream(STDOUT) do
+        DropMostRecentColumn.migrate(:up)
+        MyActiveRecordModelTransition.reset_column_information
       end
     end
   end
-
-  config.after(:each) { DB.delete if DB.exist? }
 end
